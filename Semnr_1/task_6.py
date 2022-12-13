@@ -9,22 +9,24 @@
 # 385916 -> yes
 # 123456 -> no
 
+def SumElements(n, m):
+    sum = 0
+    for i in range(n, m):
+        sum += int(ticket_number[i])
+    return sum
+
 are_you_happy = False
 while are_you_happy == False:
     ticket_number = input('\nВведите № билета Например: \n385916 - счастливый\nили \n123456 - нет --> ')
     while len(ticket_number) % 2 != 0:
         ticket_number = input('\nВведите число с четным количеством цифр--> ')
-    summa1 = 0
-    summa2 = 0
-    for i in range(len(ticket_number)//2):
-        summa1 += int(ticket_number[i])
-    for j in range(len(ticket_number)//2, len(ticket_number)):
-        summa2 += int(ticket_number[j])
-    if summa1 == summa2:
+    sum1 = SumElements(0, len(ticket_number)//2)
+    sum2 = SumElements(len(ticket_number)//2, len(ticket_number) )
+    if sum1 == sum2:
         are_you_happy = True
         print('\nСупер! Вам достался счастивый билет!' +
-            f' {ticket_number[:len(ticket_number)//2]} => {summa1}.' +
-            f' {ticket_number[len(ticket_number)//2:len(ticket_number)]} => {summa2}.' +
+            f' {ticket_number[:len(ticket_number)//2]} => {sum1}.' +
+            f' {ticket_number[len(ticket_number)//2:len(ticket_number)]} => {sum2}.' +
             ' Приятного аппетита! :)\n')
     else:
         repeat = input(f'\nБилетик {ticket_number} не съедобный. Попробуйте ещё раз? ;)'

@@ -13,7 +13,7 @@ import time
 os.system('cls')
 
 
-def check_simple_multiplier(N): # проверка числа на простоту
+def check_simple_multiplier(N):  # проверка числа на простоту
     i = 2
     j = 0
     while i*i <= N and j != 1:
@@ -38,20 +38,36 @@ def decompose_by_numbers_multipliers(N):
             if N % k == 0:
                 m.append(k)
                 N = N // k
+                degree_index = 1
                 while N % k == 0:
                     N = N // k
-                if check_simple_multiplier(N):   
-                    k = N           
-            if k != N:  
-                k += 1  
+                    degree_index += 1
+                if degree_index > 1:
+                    m.append(f'{m.pop()}**{degree_index}')
+                if check_simple_multiplier(N):
+                    k = N
+            if k != N:
+                k += 1
+        return (m)
 
-        m = sorted(set(m))
-        return (list(m))
+
+def product_list_elements(lst):  # произведение элементов массива
+    product = 1
+    for i in lst:
+        if type(i) == str:
+            product *= int(i.partition('**')[0])**int(i.partition('**')[2])
+        else:
+            product *= i
+    return product
 
 
 n = int(input('Введите число подлинней и разомнитесь, чай, кофе.. )) -> '))
 start = time.time_ns()
-print('Ok. Работаю')
-print(f'\n{decompose_by_numbers_multipliers( n )}\n')
+print('Ok. I\'m trying.... Just a moment please!')
+multipliers_list = decompose_by_numbers_multipliers(n)
+print(f'\nThe number\'s multipliers are - {multipliers_list}\n')
 stop = (time.time_ns() - start) / 1000000
-print(stop, 'ms\n')
+print(f'Даже чайник не вскипел )) - ', stop, 'ms\n')
+
+print(f'There is checking the solution. '
+      f'Your number is {product_list_elements(multipliers_list)}\nAm I right?\n')

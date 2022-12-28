@@ -22,22 +22,32 @@ def sweets_demo(candies, max_handful):
     portion = random.randint(1, max_handful)
     print(f'{pl_2} и {pl_1} передоговорились брать не более {portion} за раз')
     print(f'Для победы 1 игроку рекомендуется взять {sweets % (portion + 1)} шт.')
-    player1 = sweets % (portion + 1)
-    print(f"{pl_1} взял {player1} шт.")
-    sweets -= player1
+    score = sweets % (portion + 1)
+    print(f"{pl_1} взял {score} шт.")
+    sweets -= score
     print(f"Осталось {sweets} конфет")
     
     while sweets > 0:
-        player2 = random.randint(1, portion)
-        print(f"{pl_2} взял {player2} шт.")
-        sweets -= player2
+        score = random.randint(1, portion)
+        print(f"{pl_2} взял {score} шт.")
+        sweets -= score
         if sweets == 0 : winner = pl_2
         print(f"Осталось {sweets} конфет")
-        player1 = sweets % (portion + 1)
-        print(f'{pl_1} взял от оставшихся конфет {player1} шт.')
-        sweets -= player1
+        score = sweets % (portion + 1)
+        print(f'{pl_1} взял от оставшихся конфет {score} шт.')
+        sweets -= score
         if sweets == 0 : winner = pl_1
-    return sweets, winner
+    return score, winner, 'Loser'
+
+def player_step(sweet, player, start_message, after_message) :  
+        while True :
+            score = int(input(f'{player}, {start_message}  '))
+            if score > portion or sweet - score < 0 :
+                print(f'{player}, можно взять максимум {min(portion,sweet)} шт! ))')
+            else: break
+        print(f'{pl_1} {after_message} {score} шт.')
+        sweet -= score
+        return sweet, score 
 
 def sweets_two (candies, max_handful):
     sweets = candies
@@ -60,46 +70,22 @@ def sweets_two (candies, max_handful):
     print (f' {pl_1}!')
     print(f"Итак! На кону {sweets} конфет. Погнали!")
     
-    # while True :
-    #     score_1 = int(input(f'{pl_1}, cколько конфет берете?  '))
-    #     if score_1 > portion :
-    #         print(f'Упссс. {pl_1}, можно взять не более {portion}! Верните лишние ))')
-    #     else: break
-    # print(f"{pl_1} взял {score_1} шт.")
-    # sweets -= score_1
-    # print(f"Осталось {sweets} конфет")
-    # if sweets == 0 : 
-    #     winner = pl_1
-    #     return sweets, winner
-    
     while sweets > 0:
-        while True :
-            score_1 = int(input(f'{pl_1}, Ваш ход. Берите конфеты  '))
-            if score_1 > portion or sweets - score_1 < 0 :
-                print(f'{pl_1}, можно взять максимум {min(portion,sweets)} шт! ))')
-            else: break
-        print(f'{pl_1} взял от оставшихся конфет {score_1} шт.')
-        sweets -= score_1
+        pl_cort = player_step(sweets, pl_1, 'Ваш ход. Берите конфеты. Сколько?', 'взял от оставшихся конфет')
+        sweets, score = pl_cort
         if sweets == 0 : 
             winner = pl_1
             break
         print(f"Осталось {sweets} конфет")        
         
-        while True :
-            score_2 = int(input(f'{pl_2}, Вы следующий. Берите конфеты  '))
-            if score_2 > portion or sweets - score_2 < 0 :
-                print(f'{pl_2}, доступно не более {min(portion,sweets)} шт! Верните лишние ))')
-            else: break
-        print(f"{pl_2} взял {score_2} шт.")
-        sweets -= score_2
+        pl_cort = player_step(sweets, pl_2, 'Вы следующий. Берите конфеты', 'взял со стола')
+        sweets, score = pl_cort
         if sweets == 0 : 
             winner = pl_2
             break
         print(f"Осталось {sweets} конфет")
-        
 
-    return sweets, winner
-
+    return score, winner, 'Тот кто продул'
 
 def sweets_bot (candies, max_handful):
     sweets = candies
@@ -111,57 +97,62 @@ def sweets_bot (candies, max_handful):
     print(f'Мы договорились брать не более {portion} за раз. Уступаю Вам первый ход')
     print(f'И даже подскажу Вам взять {sweets % (portion + 1)} шт. конфет для победы')
     while True :
-        player1 = int(input(f'{pl_1}, сколько конфет берёте?  '))
-        if player1 > portion :
+        score = int(input(f'{pl_1}, сколько конфет берёте?  '))
+        if score > min(portion, sweets):
             print(f'Упссс. Договаривались не более {portion}! Верните лишние ))')
         else: break
-    sweets -= player1
+    sweets -= score
     print(f"Вы оставили {sweets} конфет на столе")
     
     while sweets > 0:
-        player2 = random.randint(1, portion)
-        print(f"Тааакс, я беру {player2} шт. {pl_1}, Ваш ход.")
-        sweets -= player2
+        score = random.randint(1, portion)
+        print(f"Тааакс, я беру {score} шт.")
+        sweets -= score
         if sweets == 0 : 
             winner = pl_2
             break
         print(f"Всё ещё есть {sweets} конфет. Думайте хорошо, чайник греется")
         
-        player1 = int(input(f'{pl_1}, советую Вам взять {sweets % (portion + 1)} шт.\n'
+        score = int(input(f'{pl_1}, советую Вам взять {sweets % (portion + 1)} шт.\n'
                             'Сколько берёте? '))
-        sweets -= player1
+        sweets -= score
         if sweets == 0 : 
             winner = pl_1
             break
         
-        player2 = sweets % (portion + 1)
-        print(f"Угу.. осталось {sweets}. Мы с фиксиками попробуем {player2} шт. Они любят сладкое ))")
-        sweets -= player2
+        score = sweets % (portion + 1)
+        print(f"Угу.. осталось {sweets}. Мы с фиксиками попробуем {score} шт. Они любят сладкое ))")
+        sweets -= score
         if sweets == 0 : 
             winner = pl_2
             break
         print(f"Осталось {sweets} шт. Берите быстрей, а то фиксики чаю с конфетами очень хотят!")
-
-        player1 = int(input(f'{pl_1}, я бы взял {sweets % (portion + 1)}, а Вы сколько берёте? '))
-        sweets -= player1
+        while True :
+            score = int(input(f'{pl_1}, я бы взял {sweets % (portion + 1)}, а Вы сколько берёте? '))
+            if score > min(portion, sweets):
+                print(f'Упссс. Договаривались не более {portion}! Верните лишние ))')
+            else: break
+        
+        sweets -= score
         if sweets == 0 : 
             winner = pl_1
             break
         print(f"В сладком остатке {sweets} шт. Неужели моя видеокарта зря кипятилась!")
         
-    return sweets, winner
+    return score, winner, 'Коллега'
 
 candies = int(input('Сколько конфет разыгрывается? '))
 portion = int(input('Максимум можно взять за раз ? '))
 
 mode = int(input ('Выбрать  режим игры: Демо - 1 / На двоих - 2 / С ботом - 3  '))
+
 if mode == 1:
-    cort = sweets_demo (candies, portion)
+    game = sweets_demo (candies, portion)
 elif mode == 2:
-    cort = sweets_two (candies, portion)
+    game = sweets_two (candies, portion)
 else:
-    cort = sweets_bot (candies, portion)
+    game = sweets_bot (candies, portion)
     
-candies, winner, loser = cort
-print(f'Поздравляем! {winner} выиграл.\n'
-      f'{loser} не грусти, {winner} поделится с тобой своими {candies} конфетами.\n')
+candies, winner, loser = game
+print(f'Поздравляем! {winner} выиграл. забрав последние {candies} штук\n'
+      f'{loser} не грусти, {winner} поделится с тобой\n')

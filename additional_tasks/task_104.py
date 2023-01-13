@@ -24,16 +24,10 @@ print(polynom_2)
 spl_1 = polynom_1[:-4].split(' + ')
 spl_2 = polynom_2[:-4].split(' + ')
 
-if len(spl_1) >= len(spl_2):
-    l1 = spl_1
-    l2 = spl_2
-else:
-    l1 = spl_2
-    l2 = spl_1
 result = [0]
 count = 0
 # result.append(0)
-for i in [l1, l2]:
+for i in [spl_1, spl_2]:
     for j in i:
         if j.find('x') == -1:           # строим элемент result[-1]
             count = 1
@@ -42,7 +36,7 @@ for i in [l1, l2]:
 if result[0] == 0:  None #result[0] = ''
 elif result[0] > 0:
     result[0] = str(result[0])            
-for i in [l1, l2]:
+for i in [spl_1, spl_2]:
     for j in i:
         if j.find('x') == len(j)-1:   # строим елемент result[-2]
             if count == 1:
@@ -61,10 +55,10 @@ elif result[0] == 1:    result[0] = 'x'
 else :    
     result[0] = str(result[0]) + '*x'
  
-k = max(int(l1[0][l1[0].rfind('*')+1:]), int(l2[0][l2[0].rfind('*')+1:]) )
+k = max(int(spl_1[0][spl_1[0].rfind('*')+1:]), int(spl_2[0][spl_2[0].rfind('*')+1:]) )
 for n in range(2, k+1):
     result.insert(0,0)
-    for i in [l1, l2]:
+    for i in [spl_1, spl_2]:
         for j in i:
             Kj = kj(j)
             if n == kj(j):

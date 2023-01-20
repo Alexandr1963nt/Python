@@ -34,7 +34,8 @@ while True:
     text = select_item(menuitems, ',новый хозяин, надо')
     if text == '0':
         os.system('cls')
-        exit()
+        # exit()
+        break
     elif text == '1': # показать
         action = select_item(submenuitems, 'показать')
         match action:
@@ -70,9 +71,9 @@ while True:
         bus = fn.print_bus() 
         driver = fn.print_driver()
         route = fn.print_route()
-        try:
-            sn.driver_bus(bus, driver, route)
-        except: print('Неверный ввод. Попробуйте снова' )
+        # try:
+        sn.driver_bus(bus, driver, route)
+        # except: print('Неверный ввод. Попробуйте снова' )
     elif text == '4':   # Удалить
         while True:
             action = select_item(submenuitems, 'удалить')

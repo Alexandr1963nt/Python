@@ -70,7 +70,9 @@ while True:
         bus = fn.print_bus() 
         driver = fn.print_driver()
         route = fn.print_route()
-        sn.driver_bus(bus, driver, route)  
+        try:
+            sn.driver_bus(bus, driver, route)
+        except: print('Неверный ввод. Попробуйте снова' )
     elif text == '4':   # Удалить
         while True:
             action = select_item(submenuitems, 'удалить')
@@ -91,8 +93,5 @@ while True:
                     case "0":   # Выход
                         os.system('cls')
                         break
-            except: 
-                print('Неверный ввод. Попробуйте снова' )
-            # else: 
-            #     print('опа')
+            except: print('Неверный ввод. Попробуйте снова' )
     c = 'next'

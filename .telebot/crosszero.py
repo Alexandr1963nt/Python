@@ -1,24 +1,12 @@
 # Задача 107 Создайте программу для игры в ""Крестики-нолики"" (Добавьте игру против бота)
 import random
 import os
-import time
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import tracemalloc
 tracemalloc.start(50)
 
 os.system('cls')
-
-# def form(dct):
-#     cz = dct
-#     print('_', end='')
-#     for i in range(1, 4):
-#         print('', i, end='')
-#     for i in 'abc':
-#         print(f'\n{i}|', end='')
-#         for j in range(1,4):
-#             print(f"{cz[f'{i}{j}']}|", end='')
-#     print('\n')
 
 cross_zero = {  # словарь для построения квадрата со значениями клеток
     'a1': '_',
@@ -69,8 +57,13 @@ bot_phrases = {
     4 : 'Кто сказал, что у меня искусственный интеллект?',
     5 : 'Продолжим?',
     6 : 'Ooops',
-    7 : 'Сорян!',  
-    8 : 'Yahoo!!! I\'m winner!'  
+    7 : 'I\'m winner! Сорян!',  
+    8 : 'Yahoo!!! I\'m winner!', 
+    9 : 'Признаю своё поражение',
+    10: 'Вы выиграли' ,
+    11: 'Хорошая игра' ,
+    12: 'Вы достойный соперник',
+    13: 'Ещё разок? /game'
 }
 
 def reread_form(): # Возвращает строку rez
@@ -137,7 +130,7 @@ def bot_brain (gamerez, count, V, step):
     else        : NV = 'X'
     game_rez = list(gamerez)    # convert to list for next row 
     random.shuffle(game_rez)    # ибо (tuple - не перемешивается) 
-    if count == 1:
+    if count == 1:              # САмый первый  ход
         if step == 'pl_2':
             for line in game_rez:    
                 if line.count('_') == 2 and line.count(NV) == 1:
@@ -161,7 +154,7 @@ def bot_brain (gamerez, count, V, step):
         message = bot_phrases.get(random.randint(1,1))
         return (qu, message)
     
-    for line in game_rez:
+    for line in game_rez:       # Все последующие ходы
         if line.count('_') == 1 and line.count(V) == 2:
             ind = line.index('_')
             key_cell = ''.join((line[0], str(ind)))
@@ -220,109 +213,14 @@ def bot_brain (gamerez, count, V, step):
     #     message = 'Ну... бывает. Требую реванша!'    
     # return (qu, message) 
 
-# def hello_bot (): # Исходник рабочий для компа
-#     human = str(random.randint(1,2)).join(['pl_',''])
-#     if human == 'pl_1':
-#         bot = 'pl_2'
-#     else:     
-#         bot = 'pl_1'
-#     globals()[human] = input('Hello! Я Ваш компьютер. Как Вас зовут?  ')
-    
-#     print(f'Очень приятно, {globals()[human]}!')
-#     globals()[bot] = 'Super-Puper-Bot'
-#     print(f'Я, {globals()[bot]}! Поехали!\n')
-#     print(f'Думаю, правила игры в крестики-нолики Вам известны? Первым заполнить любую линию.')   
-#     val = input('Чем будете играть? Выберите пожалуйста X или 0  ').upper()
-#     while '0' != val != 'X':
-#         val = input(f'Aй-яй-яй! {globals()[human]}! Кто ввел "{val}" ?!! Нужны eng X или 0  ').upper()
-#     print('Прекрасный выбор! Теперь жеребьёвка.')
-#     print('Право первого хода получает  ',end='')
-#     for i in range(8):
-#         time.sleep(.3) 
-#         print('.',end='')
-#     print (f' {pl_1}!')
-    
-#     return (bot, val, globals()[human])
 
 def hello_bot (val): # для телеги
-    # mess = list(update.message.text)
-    # val = mess[1].upper()
     human = str(random.randint(1,2)).join(['pl_',''])
     if human == 'pl_1':
         bot = 'pl_2'
     else:     
         bot = 'pl_1'
-    # globals()[human] = update.effective_user.first_name
     globals()[bot] = 'Super-Puper-Bot'
-    # result = (bot, val, globals()[human])
     result = (bot, val)
     return result
         
-def bot_main_game(message, pl):
-    mess = list(message)
-    val = mess[1].upper()    
-    count = 1
-    while True:
-        if count == 1:
-            (bot, val) = hello_bot (val)
-            player = pl
-            if val == 'X':
-                val_bot = '0'
-            else: val_bot = 'X'
-        
-            if bot == 'pl_1':
-                rez = reread_form()
-                (ky, phrase) = bot_brain (rez, count, val_bot, bot)
-                cross_zero[f'{ky}'] = val_bot
-                # print(f'One moment! {bot_phrases.get(random.randint(1,5))}')
-                # time.sleep(1.6)                
-                # os.system('cls')
-                form(cross_zero)
-                print(phrase)
-                phrase = str()
-                rez = reread_form()
-            
-            count = 2    
-            invitation = f'Выберите ячейку для {val}. Пример: "a1"'
-        ky = str()    
-        while ky not in cross_zero.keys():
-            try:    
-                ky = input(f'\nOk! {invitation}  ').lower()
-                while cross_zero[f'{ky}'] != '_':
-                    ky = input('Ууупссс. Клетка уже заполнена! Выберите новую  ' ).lower()
-            except: 
-                print ('Несуществующая клетка. Повнимательней пожалуйста. Повторим')  
-                continue 
-        invitation = f'Куда ставить {val}? '
-        cross_zero[f'{ky}'] = val
-        os.system('cls')
-        form(cross_zero)
-        rez = reread_form()
-        human_result = watch_rez(rez)
-        if human_result :
-            message = result_message (human_result)       
-            return message, player
-    # Следующим играет бот        
-        (ky, phrase) = bot_brain (rez, count, val_bot, bot)
-        cross_zero[f'{ky}'] = val_bot
-        print(f'One moment! {bot_phrases.get(random.randint(1,5))}')
-        time.sleep(1.6)
-        os.system('cls')
-        form(cross_zero)
-        print(phrase)
-        phrase = str()
-        rez = reread_form()
-        bot_result = watch_rez(rez)        
-        if bot_result :
-            message = result_message (bot_result)       
-            return message,''
-        count = 2
-        
-
-# rez1, rez2, rez3 = main_game()        # это на двоих
-# print(f'{rez1} {rez2} {rez3}\n')      # это на двоих
-
-# form(cross_zero)                      # это на двоих c ботом
-# (rez1, rez2), rez3 = bot_main_game()
-# print(f'{rez1} {rez2} {rez3}\n')
-
